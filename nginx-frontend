@@ -1,0 +1,42 @@
+server {
+    listen 80;
+    server_name yurakas97.xyz www.yurakas97.xyz;
+
+    root /var/www/html;
+    index index.html;
+
+    location /api/message {
+        proxy_pass http://localhost:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        root /var/www/html;
+        index index.html;
+    }
+}
+
+server {
+    listen 443;
+    server_name yurakas97.xyz www.yurakas97.xyz;
+
+    root /var/www/html;
+    index index.html;
+
+    location /api/message {
+        proxy_pass http://localhost:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        try_files $uri /index.html;
+    }
+}
+EOF
+
