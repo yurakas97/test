@@ -5,7 +5,7 @@ document.getElementById("fetchMessage").addEventListener("click", async () => {
         document.getElementById("message").innerText = data.message;
     } catch (error) {
         console.error("Error fetching message:", error);
-        document.getElementById("message").innerText = "Error fetching data.";
+        document.getElementById("message").innerText = "Error fetching data.(";
     }
 });
 
