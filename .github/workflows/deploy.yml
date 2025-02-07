@@ -43,6 +43,6 @@ jobs:
             docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
             docker pull yurakas97/backend:latest
             cd project
-            docker-compose down
-            docker-compose up -d
+            docker compose down
+            docker compose up -d
 
