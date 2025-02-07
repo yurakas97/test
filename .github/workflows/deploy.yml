@@ -27,6 +27,12 @@ jobs:
           push: true
           tags: yurakas97/backend:latest
 
+      - name: Debug SSH Secrets  # Винесено окремим кроком перед SSH
+        run: |
+          echo "Server IP: ${{ secrets.SERVER_IP }}"
+          echo "SSH User: ${{ secrets.SSH_USER }}"
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | sed 's/./& /g' | head -n 5
+
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -39,10 +45,4 @@ jobs:
             cd project
             docker-compose down
             docker-compose up -d
-
-- name: Debug SSH Secrets
-  run: |
-    echo "Server IP: ${{ secrets.SERVER_IP }}"
-    echo "SSH User: ${{ secrets.SSH_USER }}"
-    echo "${{ secrets.SSH_PRIVATE_KEY }}" | sed 's/./& /g' | head -n 5
 
