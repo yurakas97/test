@@ -39,3 +39,10 @@ jobs:
             cd project
             docker-compose down
             docker-compose up -d
+
+- name: Debug SSH Secrets
+  run: |
+    echo "Server IP: ${{ secrets.SERVER_IP }}"
+    echo "SSH User: ${{ secrets.SSH_USER }}"
+    echo "${{ secrets.SSH_PRIVATE_KEY }}" | sed 's/./& /g' | head -n 5
+
