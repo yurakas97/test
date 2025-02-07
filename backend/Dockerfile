@@ -12,7 +12,7 @@ RUN npm install
 COPY . .
 
 # Виставляємо порт
-EXPOSE 3000
+EXPOSE 3001
 
 # Запускаємо сервер
 CMD ["node", "server.js"]
