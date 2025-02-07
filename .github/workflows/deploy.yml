@@ -27,3 +27,15 @@ jobs:
           push: true
           tags: yurakas97/backend:latest
 
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+            docker pull yurakas97/backend:latest
+            cd project
+            docker-compose down
+            docker-compose up -d
