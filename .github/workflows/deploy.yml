@@ -1,4 +1,4 @@
-name: Deploy to Docker Hub
+name: Deploy to Server
 
 on:
   push:
@@ -6,43 +6,31 @@ on:
       - main
 
 jobs:
-  build-and-push:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and push backend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./backend
-          file: ./backend/Dockerfile
-          push: true
-          tags: yurakas97/backend:latest
-
-      - name: Debug SSH Secrets  # Винесено окремим кроком перед SSH
-        run: |
-          echo "Server IP: ${{ secrets.SERVER_IP }}"
-          echo "SSH User: ${{ secrets.SSH_USER }}"
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | sed 's/./& /g' | head -n 5
-
-      - name: Deploy to server
+      - name: Deploy to server via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-            docker pull yurakas97/backend:latest
-            cd project
-            docker compose down
-            docker compose up -d
+            cd /home/${{ secrets.SSH_USER }}/project
+
+            echo "Stopping and removing old containers..."
+            docker-compose down
+
+            echo "Cleaning up old Docker images..."
+            docker system prune -af
+
+            echo "Updating project from GitHub..."
+            git pull origin main
+
+            echo "Building and starting new containers..."
+            docker-compose up -d --build
 
