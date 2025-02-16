@@ -21,7 +21,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t yurakas97/backend:latest .
+          docker build -t test/backend:latest .
 
       - name: Push Docker image to Docker Hub
         run: |
